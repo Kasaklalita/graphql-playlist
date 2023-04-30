@@ -1,4 +1,5 @@
 const graphql = require("graphql");
+const { books, authors } = require("../database");
 
 const {
   GraphQLObjectType,
@@ -6,28 +7,8 @@ const {
   GraphQLSchema,
   GraphQLID,
   GraphQLInt,
+  GraphQLList,
 } = graphql;
-
-// dummy data
-let books = [
-  { name: "Name of the Wind", genre: "Fantasy", id: "1" },
-  {
-    name: "The Final Empire",
-    genre: "Fantasy",
-    id: "2",
-  },
-  {
-    name: "The Long Earth",
-    genre: "Sci-Fi",
-    id: "3",
-  },
-];
-
-let authors = [
-  { name: "Patrick Rothfuss", age: 44, id: "1" },
-  { name: "Brandon Sanderson", age: 42, id: "2" },
-  { name: "Terry Pratchett", age: 66, id: "3" },
-];
 
 const BookType = new GraphQLObjectType({
   name: "Book",
@@ -35,6 +16,12 @@ const BookType = new GraphQLObjectType({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
     genre: { type: GraphQLString },
+    author: {
+      type: AuthorType,
+      resolve(parent, args) {
+        return authors.find((author) => author.id === parent.authorId);
+      },
+    },
   }),
 });
 
@@ -44,6 +31,12 @@ const AuthorType = new GraphQLObjectType({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
     age: { type: GraphQLInt },
+    books: {
+      type: new GraphQLList(BookType),
+      resolve(parent, args) {
+        return books.filter((book) => book.authorId === parent.id);
+      },
+    },
   }),
 });
 
