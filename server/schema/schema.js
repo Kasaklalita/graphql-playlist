@@ -1,5 +1,7 @@
 const graphql = require("graphql");
 const { books, authors } = require("../database");
+const Book = require("../models/book");
+const Author = require("../models/author");
 
 const {
   GraphQLObjectType,
@@ -19,7 +21,7 @@ const BookType = new GraphQLObjectType({
     author: {
       type: AuthorType,
       resolve(parent, args) {
-        return authors.find((author) => author.id === parent.authorId);
+        // return authors.find((author) => author.id === parent.authorId);
       },
     },
   }),
@@ -34,7 +36,7 @@ const AuthorType = new GraphQLObjectType({
     books: {
       type: new GraphQLList(BookType),
       resolve(parent, args) {
-        return books.filter((book) => book.authorId === parent.id);
+        // return books.filter((book) => book.authorId === parent.id);
       },
     },
   }),
@@ -48,26 +50,26 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
         // code to get data from db / other source
-        return books.find((book) => book.id === args.id);
+        // return books.find((book) => book.id === args.id);
       },
     },
     author: {
       type: AuthorType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        return authors.find((author) => author.id === args.id);
+        // return authors.find((author) => author.id === args.id);
       },
     },
     books: {
       type: new GraphQLList(BookType),
       resolve(parent, args) {
-        return books;
+        // return books;
       },
     },
     authors: {
       type: new GraphQLList(AuthorType),
       resolve(parent, args) {
-        return authors;
+        // return authors;
       },
     },
   },
